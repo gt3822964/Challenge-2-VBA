@@ -1,0 +1,127 @@
+Sub VBA_challenge()
+
+    'T = Ticker
+    'Y = Yearly Change P = Percent Change
+    'T = Total Stove Value
+    'V = Value TS = Ticker Start
+    'OC = Output Counter
+    'LR = Last Row
+    Dim T As String
+    Dim Y As Double
+    Dim P As Double
+    Dim TSV As Double
+    Dim V As Double
+    Dim TS As Long
+    Dim OC As Long
+    Dim LR As Long
+    
+    Dim GIV As Double
+    Dim GDV As Double
+    Dim GTV As Double
+    Dim GIT As String
+    Dim GDT As String
+    Dim GTVT As String
+    Dim CurrentSheet As Worksheet
+    
+    
+    For Each CurrentSheet In ActiveWorkbook.Worksheets
+
+
+    'looping each of the sheet
+    CurrentSheet.Activate
+    
+  
+    'to display the right word on the excel sheet accroding to the requirement
+    'I moved this part of the code into the loop so it will appear on each sheet
+    Cells(1, 9).Value = "Ticker"
+    Cells(1, 10).Value = "Yearly Change"
+    Cells(1, 11).Value = "Percent Change"
+    Cells(1, 12).Value = "Total Stock Volume"
+    Cells(1, 16).Value = "Ticker"
+    Cells(1, 17).Value = "Value"
+    Cells(2, 15).Value = "Greatest % Increase"
+    Cells(3, 15).Value = "Greatest % Decrease"
+    Cells(4, 15).Value = "Greatest Total Volume"
+    
+    
+    'set up each variable and their values
+    GIV = 0
+    GDV = 0
+    GTV = 0
+    
+    
+    GIT = ""
+    GDT = ""
+    GTVT = ""
+    
+    
+    'here are where each variable starts
+    TSV = 0
+    TS = 2
+    OC = 2
+    LR = Cells(Rows.Count, "A").End(xlUp).Row
+     
+    
+    'here is where the loop begin
+    For i = 2 To LR
+        If Cells(i, 1).Value = Cells(i + 1, 1).Value Then
+            TSV = TSV + Cells(i, 7).Value
+        Else
+            TSV = TSV + Cells(i, 7).Value
+            Y = Cells(i, 6).Value - Cells(TS, 3).Value
+            P = Y / Cells(TS, 3).Value
+            T = Cells(i, 1).Value
+             
+        
+            'set up each cell equal to what I Dim at the beginning
+            'so each cell will display each data that I need to calculat
+            Cells(OC, 9).Value = T
+            Cells(OC, 10).Value = Y
+            Cells(OC, 11).Value = P
+            Cells(OC, 12).Value = TSV
+        
+        
+            'calculating the greastest value
+            If P > GIV Then
+                GIV = P
+                GIT = T
+            ElseIf P < GDV Then
+                GDV = P
+                GDT = T
+            End If
+        
+            
+            If TSV > GTV Then
+                GTV = TSV
+                GTVT = T
+            End If
+           
+           
+            TSV = 0
+            OC = OC + 1
+            TS = i + 1
+        End If
+    Next i
+        
+        
+    'display the value into their cells
+    Cells(2, 16).Value = GIT
+    Cells(3, 16).Value = GDT
+    Cells(4, 16).Value = GTVT
+    Cells(2, 17).Value = GIV
+    Cells(3, 17).Value = GDV
+    Cells(4, 17).Value = GTV
+                      
+        
+    'set up the color from the index.  negative is read possitive is green
+    For i = 2 To LR
+        If Cells(i, 10).Value >= 0 Then
+                Cells(i, 10).Interior.Color = RGB(0, 255, 0)
+        Else
+                Cells(i, 10).Interior.Color = RGB(255, 0, 0)
+        End If
+    Next i
+                      
+Next
+                      
+End Sub
